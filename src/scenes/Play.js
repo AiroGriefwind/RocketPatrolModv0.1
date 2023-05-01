@@ -66,12 +66,23 @@ class Play extends Phaser.Scene {
 
         //
         //CITED: https://www.youtube.com/watch?v=LEDPCfot_GY
-        // var particles = this.add.particles('particle');
-        // var emitter = particles.createEmitter();
+        // let particles;
+        // particles = this.add.particles('particle');
+        // particles.createEmitter({
+
+        //     speedY: { min: -800, max: 800 },
+        //     speedX: { min: -800, max: 800 },
+
+        //     scale: { start: 1, end: 0 }, 
+        //     follow: this.p1Rocket,
+        //     blendMode: 'ADD',
+
+        //     quantity: 10
+        // });
         // emitter.setPosition(400,300);
         // emitter.setSpeed(200);
         // emitter.setBlendMode('ADD');
-        
+
         //     x: 400,
         //     y: 300,
         //     speed: { min: -800, max: 800 },
@@ -81,7 +92,7 @@ class Play extends Phaser.Scene {
         //     lifespan: 1000,
         //     quantity: 10
         // });
-        
+
         // animation config
         this.anims.create({
             key: 'explode',
@@ -131,7 +142,7 @@ class Play extends Phaser.Scene {
         scoreConfig.fixedWidth = 0;
 
         // add timer text
-        this.timerText = this.add.text(game.config.width - borderUISize - borderPadding, borderUISize + borderPadding*2, 'Time: ' + game.settings.gameTimer / 1000, scoreConfig).setOrigin(1, 0);
+        this.timerText = this.add.text(game.config.width - borderUISize - borderPadding, borderUISize + borderPadding * 2, 'Time: ' + game.settings.gameTimer / 1000, scoreConfig).setOrigin(1, 0);
 
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
@@ -224,6 +235,20 @@ class Play extends Phaser.Scene {
         this.p1Score += ship.points;
         this.scoreLeft.text = this.p1Score;
         //play explosion audio
-        this.sound.play('sfx_explosion');
+        let explosionIndex = Phaser.Math.Between(1, 4);
+        switch (explosionIndex) {
+            case 1:
+                this.sound.play('sfx_explosion');
+                break;
+            case 2:
+                this.sound.play('sfx_explosion2');
+                break;
+            case 3:
+                this.sound.play('sfx_explosion3');
+                break;
+            case 4:
+                this.sound.play('sfx_explosion4');
+                break;
+        }
     }
 }
