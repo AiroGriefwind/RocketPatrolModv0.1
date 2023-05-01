@@ -8,6 +8,7 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
+        this.load.image('particle', './assets/particle.png');
         //
         this.load.audio('bgm', './assets/eco-technology-145636.mp3');
         // load spritesheet
@@ -63,6 +64,24 @@ class Play extends Phaser.Scene {
         // add spaceship2 
         this.ship2 = new Spaceship(this, game.config.width + borderUISize * 6, borderUISize * 4 - borderPadding, 'spaceship2', 0, 30).setOrigin(0, 0);
 
+        //
+        //CITED: https://www.youtube.com/watch?v=LEDPCfot_GY
+        // var particles = this.add.particles('particle');
+        // var emitter = particles.createEmitter();
+        // emitter.setPosition(400,300);
+        // emitter.setSpeed(200);
+        // emitter.setBlendMode('ADD');
+        
+        //     x: 400,
+        //     y: 300,
+        //     speed: { min: -800, max: 800 },
+        //     angle: { min: 0, max: 360 },
+        //     scale: { start: 1, end: 0 },
+        //     blendMode: 'ADD',
+        //     lifespan: 1000,
+        //     quantity: 10
+        // });
+        
         // animation config
         this.anims.create({
             key: 'explode',
@@ -160,18 +179,21 @@ class Play extends Phaser.Scene {
             this.shipExplode(this.ship03);
             this.clock.delay += 1000;
             this.Fire.alpha = 0;
+            //particles.emitParticleAt(ship03.x, ship03.y);
         }
         if (this.checkCollision(this.p1Rocket, this.ship02)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship02);
             this.clock.delay += 2000;
             this.Fire.alpha = 0;
+            //particles.emitParticleAt(ship02.x, ship02.y); 
         }
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
             this.clock.delay += 3000;
             this.Fire.alpha = 0;
+            //particles.emitParticleAt(ship01.x, ship01.y);
         }
     }
 
