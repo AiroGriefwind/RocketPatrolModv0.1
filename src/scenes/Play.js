@@ -8,12 +8,25 @@ class Play extends Phaser.Scene {
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
         this.load.image('starfield', './assets/starfield.png');
+        //
+        this.load.audio('bgm', './assets/eco-technology-145636.mp3');
         // load spritesheet
         this.load.spritesheet('explosion', './assets/explosion.png',
             { frameWidth: 64, frameHeight: 32, startFrame: 0, endFrame: 9 });
     }
 
     create() {
+        //
+        const bgm = this.sound.get('bgm');
+        if (!bgm) {
+            const newBgm = this.sound.add('bgm', { loop: true });
+            newBgm.play();
+            newBgm.volume = 0.5;
+        }
+        /*else {
+            bgm.play();
+        }
+        //this.setVolume(0.5);*/
 
         // place tile sprite
         this.starfield = this.add.tileSprite(0, 0, 640, 480, 'starfield').setOrigin(0, 0);
@@ -47,6 +60,9 @@ class Play extends Phaser.Scene {
         this.ship02 = new Spaceship(this, game.config.width + borderUISize * 3, borderUISize * 5 + borderPadding * 2, 'spaceship', 0, 20).setOrigin(0, 0);
         this.ship03 = new Spaceship(this, game.config.width, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(0, 0);
 
+        // add spaceship2 
+        this.ship2 = new Spaceship(this, game.config.width + borderUISize * 6, borderUISize * 4 - borderPadding, 'spaceship2', 0, 30).setOrigin(0, 0);
+
         // animation config
         this.anims.create({
             key: 'explode',
@@ -71,21 +87,48 @@ class Play extends Phaser.Scene {
         }
         this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.p1Score, scoreConfig);
 
+
+
+        //
+        let FireUI = {
+            fontFamily: 'Courier',
+            fontSize: '28px',
+            backgroundColor: '#F3B141',
+            color: '#843605',
+            align: 'right',
+            padding: {
+                top: 5,
+                bottom: 5,
+            },
+            fixedWidth: 0
+        }
+        this.Fire = this.add.text(game.config.width / 2, game.config.height / 4 - borderPadding - borderUISize, 'Fire', FireUI).setOrigin(0.5);
+        this.Fire.alpha = 0;
+
         // GAME OVER flag
         this.gameOver = false;
 
         // 60-second play clock
         scoreConfig.fixedWidth = 0;
+
+        // add timer text
+        this.timerText = this.add.text(game.config.width - borderUISize - borderPadding, borderUISize + borderPadding*2, 'Time: ' + game.settings.gameTimer / 1000, scoreConfig).setOrigin(1, 0);
+
         this.clock = this.time.delayedCall(game.settings.gameTimer, () => {
             this.add.text(game.config.width / 2, game.config.height / 2, 'GAME OVER', scoreConfig).setOrigin(0.5);
             this.add.text(game.config.width / 2, game.config.height / 2 + 64, 'Press (R) to Restart or ← for Menu', scoreConfig).setOrigin(0.5);
             this.gameOver = true;
         }, null, this);
+
+
     }
 
 
 
     update() {
+        // update timer text
+        this.timerText.setText('Time: ' + Math.ceil(this.clock.getRemainingSeconds()));
+
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
             this.scene.restart();
@@ -103,18 +146,29 @@ class Play extends Phaser.Scene {
             this.ship03.update();
         }
 
+
+
+
+        //
+
+        if (this.p1Rocket.isFiring == true) { this.Fire.alpha = 1; }
+
+
         // check collisions
         if (this.checkCollision(this.p1Rocket, this.ship03)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship03);
+            this.Fire.alpha = 0;
         }
         if (this.checkCollision(this.p1Rocket, this.ship02)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship02);
+            this.Fire.alpha = 0;
         }
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
+            this.Fire.alpha = 0;
         }
     }
 
