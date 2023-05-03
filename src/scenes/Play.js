@@ -7,6 +7,7 @@ class Play extends Phaser.Scene {
         // load images/tile sprites
         this.load.image('rocket', './assets/rocket.png');
         this.load.image('spaceship', './assets/spaceship.png');
+        this.load.image('spaceship2', './assets/spaceship2.png');
         this.load.image('starfield', './assets/starfield.png');
         this.load.image('particle', './assets/particle.png');
         //
@@ -62,45 +63,15 @@ class Play extends Phaser.Scene {
         this.ship03 = new Spaceship(this, game.config.width, borderUISize * 6 + borderPadding * 4, 'spaceship', 0, 10).setOrigin(0, 0);
 
         // add spaceship2 
-        this.ship2 = new Spaceship(this, game.config.width + borderUISize * 6, borderUISize * 4 - borderPadding, 'spaceship2', 0, 30).setOrigin(0, 0);
-
         //
-        //CITED: https://www.youtube.com/watch?v=LEDPCfot_GY
-        // let emitter = this.add.particles(100, 300, 'particle', {
-        //     //frame: 'particle',
-        //     lifespan: 1000,
-        //     angle: { min: -30, max: 30 },
-        //     speed: 150
-        //   });
+        // let yMin = borderUISize * 4;
+        // let yMax = borderUISize * 6 + borderPadding * 4;
+        // let yRange = yMax - yMin;
+        // let yPosition = yMin + yRange * Math.random(); // get a random y position within the range
 
-        //this.add.emitter;
-        //let particles=new Particle(emitter);
-        //particles = this.add.particles('particle');
+        this.ship2 = new Spaceship2(this, game.config.width + borderUISize * 6, Phaser.Math.Between(borderUISize * 4, borderUISize * 6 + borderPadding * 4), 'spaceship2', 0, 50).setOrigin(0, 0);
 
-        // particles.config({
-
-        //     speedY: { min: -800, max: 800 },
-        //     speedX: { min: -800, max: 800 },
-
-        //     scale: { start: 1, end: 0 }, 
-        //     follow: this.p1Rocket,
-        //     blendMode: 'ADD',
-
-        //     quantity: 10
-        // });
-        // emitter.setPosition(400,300);
-        // emitter.setSpeed(200);
-        // emitter.setBlendMode('ADD');
-
-        //     x: 400,
-        //     y: 300,
-        //     speed: { min: -800, max: 800 },
-        //     angle: { min: 0, max: 360 },
-        //     scale: { start: 1, end: 0 },
-        //     blendMode: 'ADD',
-        //     lifespan: 1000,
-        //     quantity: 10
-        // });
+        
 
         // animation config
         this.anims.create({
@@ -180,9 +151,10 @@ class Play extends Phaser.Scene {
         this.starfield.tilePositionX -= 4;
         if (!this.gameOver) {
             this.p1Rocket.update();         // update rocket sprite
-            this.ship01.update();           // update spaceships (x3)
+            this.ship01.update();           // update spaceships (x4)
             this.ship02.update();
             this.ship03.update();
+            this.ship2.update();
         }
 
 
@@ -199,21 +171,28 @@ class Play extends Phaser.Scene {
             this.shipExplode(this.ship03);
             this.clock.delay += 1000;
             this.Fire.alpha = 0;
-            //particles.emitParticleAt(ship03.x, ship03.y);
+
         }
         if (this.checkCollision(this.p1Rocket, this.ship02)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship02);
             this.clock.delay += 2000;
             this.Fire.alpha = 0;
-            //particles.emitParticleAt(ship02.x, ship02.y); 
+
         }
         if (this.checkCollision(this.p1Rocket, this.ship01)) {
             this.p1Rocket.reset();
             this.shipExplode(this.ship01);
             this.clock.delay += 3000;
             this.Fire.alpha = 0;
-            //particles.emitParticleAt(ship01.x, ship01.y);
+
+        }
+        if (this.checkCollision(this.p1Rocket, this.ship2)) {
+            this.p1Rocket.reset();
+            this.shipExplode(this.ship2);
+            this.clock.delay += 5000;
+            this.Fire.alpha = 0;
+
         }
     }
 
@@ -230,6 +209,11 @@ class Play extends Phaser.Scene {
     }
 
     shipExplode(ship) {
+        if (ship === this.ship2) {
+            this.ship2.isDead = true;
+          }
+          
+
         // temporarily hide ship
         ship.alpha = 0;
 

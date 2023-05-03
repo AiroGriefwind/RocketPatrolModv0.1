@@ -5,8 +5,9 @@ class Spaceship2 extends Phaser.GameObjects.Sprite {
   
       
       scene.add.existing(this); //add to existing scene
+      this.setScale(0.5);//
       this.points = pointValue; //store pointValue
-      this.moveSpeed = game.settings.spaceshipSpeed;       //pixels per frame
+      this.moveSpeed = game.settings.spaceshipSpeed*2;       //pixels per frame
       this.direction = Phaser.Math.RND.sign(); // randomly set direction to -1 or 1
 
       // flip sprite if moving right
@@ -36,14 +37,17 @@ class Spaceship2 extends Phaser.GameObjects.Sprite {
     reset() {
         // randomly set direction to -1 or 1
         this.direction = Phaser.Math.RND.sign();
-
+        //
+        this.y = Phaser.Math.Between(borderUISize * 4, borderUISize * 6 + borderPadding * 4)
         // reset position based on direction
         if (this.direction === -1) {
             this.x = game.config.width + this.width;
             this.setScale(1, 1);
+            this.setScale(0.5);
         } else {
             this.x = 0 - this.width;
             this.setScale(-1, 1);
+            this.setScale(0.5);
         }
     }
   }
