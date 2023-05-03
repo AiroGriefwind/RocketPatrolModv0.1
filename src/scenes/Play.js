@@ -209,9 +209,9 @@ class Play extends Phaser.Scene {
     }
 
     shipExplode(ship) {
-        if (ship === this.ship2) {
-            this.ship2.isDead = true;
-          }
+        // if (ship === this.ship2) {
+        //     this.ship2.isDead = true;
+        //   }
           
 
         // temporarily hide ship
