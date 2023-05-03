@@ -71,7 +71,7 @@ class Play extends Phaser.Scene {
 
         this.ship2 = new Spaceship2(this, game.config.width + borderUISize * 6, Phaser.Math.Between(borderUISize * 4, borderUISize * 6 + borderPadding * 4), 'spaceship2', 0, 50).setOrigin(0, 0);
 
-        
+
 
         // animation config
         this.anims.create({
@@ -82,10 +82,14 @@ class Play extends Phaser.Scene {
 
         // initialize score
         this.p1Score = 0;
+        if (!window.localStorage.getItem('HS')) {
+            window.localStorage.setItem('HS', 0)
+        }
+        this.HighScore = window.localStorage.getItem('HS');
         // display score
         let scoreConfig = {
             fontFamily: 'Courier',
-            fontSize: '28px',
+            fontSize: '20px',
             backgroundColor: '#F3B141',
             color: '#843605',
             align: 'right',
@@ -95,7 +99,7 @@ class Play extends Phaser.Scene {
             },
             fixedWidth: 100
         }
-        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.p1Score, scoreConfig);
+        this.scoreLeft = this.add.text(borderUISize + borderPadding, borderUISize + borderPadding * 2, this.p1Score + '\n' + "HS: " + this.HighScore, scoreConfig);
 
 
 
@@ -141,10 +145,12 @@ class Play extends Phaser.Scene {
 
         // check key input for restart
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyR)) {
+            window.localStorage.setItem('HS', this.HighScore)
             this.scene.restart();
         }
 
         if (this.gameOver && Phaser.Input.Keyboard.JustDown(keyLEFT)) {
+            window.localStorage.setItem('HS', this.HighScore)
             this.scene.start("menuScene");
         }
 
@@ -212,7 +218,7 @@ class Play extends Phaser.Scene {
         // if (ship === this.ship2) {
         //     this.ship2.isDead = true;
         //   }
-          
+
 
         // temporarily hide ship
         ship.alpha = 0;
@@ -238,7 +244,9 @@ class Play extends Phaser.Scene {
         });
         // score add and repaint
         this.p1Score += ship.points;
-        this.scoreLeft.text = this.p1Score;
+        if (this.HighScore < this.p1Score) { this.HighScore = this.p1Score; }
+        this.scoreLeft.text = this.p1Score + '\n' + "HS: " + this.HighScore;
+        
         //play explosion audio
         let explosionIndex = Phaser.Math.Between(1, 4);
         switch (explosionIndex) {
