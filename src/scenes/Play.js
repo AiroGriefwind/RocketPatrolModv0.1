@@ -66,9 +66,18 @@ class Play extends Phaser.Scene {
 
         //
         //CITED: https://www.youtube.com/watch?v=LEDPCfot_GY
-        // let particles;
-        // particles = this.add.particles('particle');
-        // particles.createEmitter({
+        // let emitter = this.add.particles(100, 300, 'particle', {
+        //     //frame: 'particle',
+        //     lifespan: 1000,
+        //     angle: { min: -30, max: 30 },
+        //     speed: 150
+        //   });
+
+        //this.add.emitter;
+        //let particles=new Particle(emitter);
+        //particles = this.add.particles('particle');
+
+        // particles.config({
 
         //     speedY: { min: -800, max: 800 },
         //     speedX: { min: -800, max: 800 },
@@ -223,6 +232,17 @@ class Play extends Phaser.Scene {
     shipExplode(ship) {
         // temporarily hide ship
         ship.alpha = 0;
+
+        //
+        let emitter = this.add.particles(ship.x, ship.y, 'particle', {
+            //frame: 'particle',
+            lifespan: 1000,
+            //angle: { min: -30, max: 30 },
+            speed: 150,
+            scale: { start: 0.5, end: 0 },
+            blendMode: 'ADD'
+        });
+
         // create explosion sprite at ship's position
         let boom = this.add.sprite(ship.x, ship.y, 'explosion').setOrigin(0, 0);
         boom.anims.play('explode');             // play explode animation
@@ -230,6 +250,7 @@ class Play extends Phaser.Scene {
             ship.reset();                         // reset ship position
             ship.alpha = 1;                       // make ship visible again
             boom.destroy();                       // remove explosion sprite
+            emitter.destroy();
         });
         // score add and repaint
         this.p1Score += ship.points;
